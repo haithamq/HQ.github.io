@@ -362,6 +362,28 @@ function applyBasePathToInternalHrefs(html: string): string {
   });
 }
 
+/**
+ * GitHub Pages serves static export as `path/index.html`, which is reachable at `/path/`.
+ * Links to `/path` (no trailing slash) often 404; normalize root-relative page links.
+ */
+function ensureTrailingSlashOnInternalHrefs(html: string): string {
+  return html.replace(/href="([^"]+)"/g, (full, raw: string) => {
+    if (/^(https?:|mailto:|tel:|javascript:)/i.test(raw)) return full;
+    if (raw.startsWith("#")) return full;
+    const hashIdx = raw.indexOf("#");
+    const pathAndQuery = hashIdx >= 0 ? raw.slice(0, hashIdx) : raw;
+    const hash = hashIdx >= 0 ? raw.slice(hashIdx) : "";
+    const qIdx = pathAndQuery.indexOf("?");
+    const path = qIdx >= 0 ? pathAndQuery.slice(0, qIdx) : pathAndQuery;
+    const query = qIdx >= 0 ? pathAndQuery.slice(qIdx) : "";
+    if (!path.startsWith("/")) return full;
+    if (path === "/" || path.endsWith("/")) return full;
+    const lastSeg = path.split("/").filter(Boolean).pop() ?? "";
+    if (lastSeg.includes(".")) return full;
+    return `href="${path}/${query}${hash}"`;
+  });
+}
+
 export function applyInternalPageLinks(html: string, slug: string): string {
   let out = html;
   out = applyLogoLinks(out, slug);
@@ -373,6 +395,7 @@ export function applyInternalPageLinks(html: string, slug: string): string {
   out = stripLegacySocialFooterColumns(out);
   out = normalizeCopyrightYear(out);
   out = applyBasePathToInternalHrefs(out);
+  out = ensureTrailingSlashOnInternalHrefs(out);
   return out;
 }
 
@@ -380,14 +403,14 @@ export type LocaleAlternate = { href: string; label: string };
 
 export function localeAlternateForSlug(slug: string): LocaleAlternate | null {
   const map: Record<string, LocaleAlternate> = {
-    landing: { href: "/ar", label: "العربية" },
+    landing: { href: "/ar/", label: "العربية" },
     "landing-ar": { href: "/", label: "English" },
-    contact: { href: "/ar/contact", label: "العربية" },
-    "contact-ar": { href: "/contact", label: "English" },
-    "services-detail": { href: "/services/ar", label: "العربية" },
-    "services-detail-ar": { href: "/services", label: "English" },
-    "portfolio-case-studies": { href: "/portfolio", label: "العربية" },
-    "portfolio-ar": { href: "/case-studies", label: "English" },
+    contact: { href: "/ar/contact/", label: "العربية" },
+    "contact-ar": { href: "/contact/", label: "English" },
+    "services-detail": { href: "/services/ar/", label: "العربية" },
+    "services-detail-ar": { href: "/services/", label: "English" },
+    "portfolio-case-studies": { href: "/portfolio/", label: "العربية" },
+    "portfolio-ar": { href: "/case-studies/", label: "English" },
   };
   return map[slug] ?? null;
 }
