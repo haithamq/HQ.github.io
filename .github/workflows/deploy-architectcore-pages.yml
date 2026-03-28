@@ -1,4 +1,5 @@
-# Next.js app lives at the repository root (typical for a dedicated HQ.github.io site repo).
+# Requires: Settings → Pages → Build and deployment → Source: GitHub Actions
+# (Not "Deploy from a branch".)
 
 name: Deploy ArchitectCore to GitHub Pages
 
@@ -16,15 +17,15 @@ concurrency:
   group: architectcore-pages-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  APP_DIR: "."
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -62,6 +63,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
