@@ -5,6 +5,8 @@ import { applyInternalPageLinks } from "@/lib/stitch-links";
 const ALLOWED = new Set([
   "landing",
   "landing-ar",
+  "contact",
+  "contact-ar",
   "portfolio-ar",
   "portfolio-case-studies",
   "services-detail",

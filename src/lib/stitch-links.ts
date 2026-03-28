@@ -1,12 +1,23 @@
-const SOCIAL = {
-  linkedin: "https://www.linkedin.com",
-  github: "https://github.com",
-  twitter: "https://twitter.com",
-} as const;
+/** WhatsApp (E.164 without +). */
+const WHATSAPP_E164 = "971553395449";
+
+function whatsappWithText(message: string): string {
+  return `https://wa.me/${WHATSAPP_E164}?text=${encodeURIComponent(message)}`;
+}
+
+const WA_QUOTE_EN = whatsappWithText(
+  "Hello, I'd like a quote from HQ IT Solutions.",
+);
+const WA_QUOTE_AR = whatsappWithText(
+  "مرحباً، أود الحصول على عرض سعر من HQ IT Solutions.",
+);
+
+const WA_LINK_ATTR = 'target="_blank" rel="noopener noreferrer"';
 
 function isArabicSlug(slug: string): boolean {
   return (
     slug === "landing-ar" ||
+    slug === "contact-ar" ||
     slug === "portfolio-ar" ||
     slug === "services-detail-ar"
   );
@@ -36,7 +47,7 @@ function applyNavAndFooterLinks(html: string, slug: string): string {
     html = linkLabel(html, "الخدمات", services);
     html = linkLabel(html, "خدماتنا", services);
     html = linkLabel(html, "أعمالنا", portfolio);
-    html = linkLabel(html, "اتصل بنا", services);
+    html = linkLabel(html, "اتصل بنا", "/ar/contact");
     html = linkLabel(html, "دراسات الحالة", caseStudies);
     html = linkLabel(html, "من نحن", "#about");
     html = linkLabel(html, "الوظائف", "#careers");
@@ -50,14 +61,11 @@ function applyNavAndFooterLinks(html: string, slug: string): string {
     html = linkLabel(html, "سياسة الخصوصية", "#privacy");
     html = linkLabel(html, "شروط الخدمة", "#terms");
     html = linkLabel(html, "إعدادات الكوكيز", "#cookies");
-    html = linkLabel(html, "لينكد إن", SOCIAL.linkedin);
-    html = linkLabel(html, "جيت هاب", SOCIAL.github);
-    html = linkLabel(html, "تويتر", SOCIAL.twitter);
   } else {
     html = linkLabel(html, "Home", home);
     html = linkLabel(html, "Services", services);
     html = linkLabel(html, "Portfolio", portfolio);
-    html = linkLabel(html, "Contact", services);
+    html = linkLabel(html, "Contact", "/contact");
     html = linkLabel(html, "Case Studies", caseStudies);
     html = linkLabel(html, "About Us", "#about");
     html = linkLabel(html, "Careers", "#careers");
@@ -71,9 +79,6 @@ function applyNavAndFooterLinks(html: string, slug: string): string {
     html = linkLabel(html, "Privacy Policy", "#privacy");
     html = linkLabel(html, "Terms of Service", "#terms");
     html = linkLabel(html, "Cookie Settings", "#cookies");
-    html = linkLabel(html, "LinkedIn", SOCIAL.linkedin);
-    html = linkLabel(html, "GitHub", SOCIAL.github);
-    html = linkLabel(html, "Twitter", SOCIAL.twitter);
   }
 
   return html;
@@ -90,30 +95,6 @@ function applyLogoLinks(html: string, slug: string): string {
   return html;
 }
 
-function applyConnectIconLinks(html: string): string {
-  const linkedinBlock = `<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">
-<span class="material-symbols-outlined">public</span>
-</a>`;
-  const githubBlock = `<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">
-<span class="material-symbols-outlined">code</span>
-</a>`;
-  html = replaceOnce(
-    html,
-    linkedinBlock,
-    `<a class="text-slate-500 hover:text-blue-600 transition-colors" href="${SOCIAL.linkedin}" target="_blank" rel="noopener noreferrer">
-<span class="material-symbols-outlined">public</span>
-</a>`,
-  );
-  html = replaceOnce(
-    html,
-    githubBlock,
-    `<a class="text-slate-500 hover:text-blue-600 transition-colors" href="${SOCIAL.github}" target="_blank" rel="noopener noreferrer">
-<span class="material-symbols-outlined">code</span>
-</a>`,
-  );
-  return html;
-}
-
 function applyLandingButtons(html: string, slug: string): string {
   if (slug !== "landing" && slug !== "landing-ar") return html;
 
@@ -123,7 +104,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
                 Get a Quote
             </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
                 Get a Quote
             </a>`,
     );
@@ -132,7 +113,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
                             Start Your Project
                         </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
                             Start Your Project
                         </a>`,
     );
@@ -152,7 +133,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
                         Start Your Project
                     </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
                         Start Your Project
                     </a>`,
     );
@@ -161,7 +142,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                         Schedule a Demo
                     </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                         Schedule a Demo
                     </a>`,
     );
@@ -171,7 +152,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
             احصل على عرض سعر
         </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-xl font-medium hover:opacity-80 transition-opacity duration-300 active:scale-95">
             احصل على عرض سعر
         </a>`,
     );
@@ -180,7 +161,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
                         ابدأ مشروعك
                     </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-xl shadow-primary/10 hover:translate-y-[-2px] transition-all">
                         ابدأ مشروعك
                     </a>`,
     );
@@ -200,7 +181,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
                     ابدأ مشروعك الآن
                 </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:brightness-110 transition-all shadow-2xl shadow-black/20">
                     ابدأ مشروعك الآن
                 </a>`,
     );
@@ -209,7 +190,7 @@ function applyLandingButtons(html: string, slug: string): string {
       `<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                     احجز عرضاً توضيحياً
                 </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                     احجز عرضاً توضيحياً
                 </a>`,
     );
@@ -227,7 +208,7 @@ function applyPortfolioNavQuoteButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
                 Get a Quote
             </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
                 Get a Quote
             </a>`,
     );
@@ -237,7 +218,7 @@ function applyPortfolioNavQuoteButtons(html: string, slug: string): string {
       `<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
             احصل على عرض سعر
         </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-medium text-sm hover:opacity-90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/10">
             احصل على عرض سعر
         </a>`,
     );
@@ -255,7 +236,7 @@ function applyPortfolioCtaButtons(html: string, slug: string): string {
       `<button class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
                                 Get a Quote
                             </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
                                 Get a Quote
                             </a>`,
     );
@@ -264,7 +245,7 @@ function applyPortfolioCtaButtons(html: string, slug: string): string {
       `<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                                 Contact Sales
                             </button>`,
-      `<a href="/services" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                                 Contact Sales
                             </a>`,
     );
@@ -274,7 +255,7 @@ function applyPortfolioCtaButtons(html: string, slug: string): string {
       `<button class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
                             احصل على عرض سعر
                         </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary/20 transition-all active:scale-95">
                             احصل على عرض سعر
                         </a>`,
     );
@@ -283,7 +264,7 @@ function applyPortfolioCtaButtons(html: string, slug: string): string {
       `<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                             تحدث إلى المبيعات
                         </button>`,
-      `<a href="/services/ar" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
                             تحدث إلى المبيعات
                         </a>`,
     );
@@ -299,18 +280,18 @@ function applyServicesDetailButtons(html: string, slug: string): string {
     html = replaceOnce(
       html,
       `<button class="architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">Get a Quote</button>`,
-      `<a href="/case-studies" class="inline-flex items-center justify-center architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">Get a Quote</a>`,
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">Get a Quote</a>`,
     );
     html = html.replace(
       /<button class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center gap-2">\s*Consult Now <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward<\/span>\s*<\/button>/g,
-      `<a href="/case-studies" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all gap-2">Consult Now <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>`,
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all gap-2">Consult Now <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>`,
     );
     html = replaceOnce(
       html,
       `<button class="bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all flex items-center gap-2 text-lg">
                         Consult Now <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
 </button>`,
-      `<a href="/case-studies" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all gap-2 text-lg">
+      `<a href="${WA_QUOTE_EN}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all gap-2 text-lg">
                         Consult Now <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
 </a>`,
     );
@@ -318,24 +299,56 @@ function applyServicesDetailButtons(html: string, slug: string): string {
     html = replaceOnce(
       html,
       `<button class="architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">اطلب عرض سعر</button>`,
-      `<a href="/portfolio" class="inline-flex items-center justify-center architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">اطلب عرض سعر</a>`,
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center architectural-gradient text-on-primary px-6 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 active:scale-95 transition-all">اطلب عرض سعر</a>`,
     );
     html = html.replace(
       /<button class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center gap-2">\s*استشرنا الآن <span class="material-symbols-outlined text-sm rotate-180" data-icon="arrow_forward">arrow_forward<\/span>\s*<\/button>/g,
-      `<a href="/portfolio" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all gap-2">استشرنا الآن <span class="material-symbols-outlined text-sm rotate-180" data-icon="arrow_forward">arrow_forward</span></a>`,
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all gap-2">استشرنا الآن <span class="material-symbols-outlined text-sm rotate-180" data-icon="arrow_forward">arrow_forward</span></a>`,
     );
     html = replaceOnce(
       html,
       `<button class="bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all flex items-center gap-2 text-lg">
                     استشرنا الآن <span class="material-symbols-outlined rotate-180" data-icon="arrow_forward">arrow_forward</span>
 </button>`,
-      `<a href="/portfolio" class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all gap-2 text-lg">
+      `<a href="${WA_QUOTE_AR}" ${WA_LINK_ATTR} class="inline-flex items-center justify-center bg-secondary-container text-on-secondary-container px-12 py-5 rounded-xl font-bold hover:opacity-90 transition-all gap-2 text-lg">
                     استشرنا الآن <span class="material-symbols-outlined rotate-180" data-icon="arrow_forward">arrow_forward</span>
 </a>`,
     );
   }
 
   return html;
+}
+
+/** Drop legacy footer blocks (social lists / تواصل معنا) from older Stitch exports. */
+function stripLegacySocialFooterColumns(html: string): string {
+  let out = html;
+  out = out.replace(
+    /<div class="col-span-1">\s*<h4 class="[^"]*">تواصل معنا<\/h4>\s*<ul[\s\S]*?<\/ul>\s*<\/div>/g,
+    "",
+  );
+  out = out.replace(
+    /<div>\s*<h4 class="font-bold[^"]*">تواصل معنا<\/h4>\s*<ul[\s\S]*?<\/ul>\s*<\/div>/g,
+    "",
+  );
+  out = out.replace(
+    /<div>\s*<h4 class="font-bold[^"]*">Connect<\/h4>\s*<ul[\s\S]*?<\/ul>\s*<\/div>/g,
+    "",
+  );
+  out = out.replace(
+    /<div>\s*<h4 class="font-bold[^"]*">تواصل<\/h4>\s*<ul[\s\S]*?<\/ul>\s*<\/div>/g,
+    "",
+  );
+  out = out.replace(
+    /(<div class="grid grid-cols-1 )md:grid-cols-4( gap-8 px-8 py-12 max-w-7xl mx-auto">)/g,
+    "$1md:grid-cols-3$2",
+  );
+  return out;
+}
+
+/** Footer © line: normalize any four-digit year so stale Stitch exports never show an old year. */
+function normalizeCopyrightYear(html: string): string {
+  const year = new Date().getFullYear();
+  return html.replace(/©\s*20\d{2}/g, `© ${year}`);
 }
 
 /** Match Next.js `basePath` (no trailing slash). Set when deploying to GitHub Project Pages. */
@@ -353,11 +366,12 @@ export function applyInternalPageLinks(html: string, slug: string): string {
   let out = html;
   out = applyLogoLinks(out, slug);
   out = applyNavAndFooterLinks(out, slug);
-  out = applyConnectIconLinks(out);
   out = applyLandingButtons(out, slug);
   out = applyPortfolioNavQuoteButtons(out, slug);
   out = applyPortfolioCtaButtons(out, slug);
   out = applyServicesDetailButtons(out, slug);
+  out = stripLegacySocialFooterColumns(out);
+  out = normalizeCopyrightYear(out);
   out = applyBasePathToInternalHrefs(out);
   return out;
 }
@@ -368,6 +382,8 @@ export function localeAlternateForSlug(slug: string): LocaleAlternate | null {
   const map: Record<string, LocaleAlternate> = {
     landing: { href: "/ar", label: "العربية" },
     "landing-ar": { href: "/", label: "English" },
+    contact: { href: "/ar/contact", label: "العربية" },
+    "contact-ar": { href: "/contact", label: "English" },
     "services-detail": { href: "/services/ar", label: "العربية" },
     "services-detail-ar": { href: "/services", label: "English" },
     "portfolio-case-studies": { href: "/portfolio", label: "العربية" },
