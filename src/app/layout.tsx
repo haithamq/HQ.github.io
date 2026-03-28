@@ -10,11 +10,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "ArchitectCore IT Solutions",
-    template: "%s | ArchitectCore",
+    default: "HQ IT Solutions",
+    template: "%s | HQ IT Solutions",
   },
   description:
-    "Precision-grade software infrastructures and IT solutions for modern enterprises.",
+    "Business IT solutions, software, and digital services for modern enterprises.",
 };
 
 export default function RootLayout({

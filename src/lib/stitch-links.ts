@@ -84,13 +84,8 @@ function applyLogoLinks(html: string, slug: string): string {
   const home = ar ? "/ar" : "/";
   html = replaceOnce(
     html,
-    '<div class="text-xl font-bold tracking-tighter text-blue-900">ArchitectCore IT</div>',
-    `<a href="${home}" class="text-xl font-bold tracking-tighter text-blue-900 hover:opacity-90 transition-opacity">ArchitectCore IT</a>`,
-  );
-  html = replaceOnce(
-    html,
-    '<div class="text-xl font-bold tracking-tighter text-blue-900">أرشيتكت كور IT</div>',
-    `<a href="/ar" class="text-xl font-bold tracking-tighter text-blue-900 hover:opacity-90 transition-opacity">أرشيتكت كور IT</a>`,
+    '<div class="text-xl font-bold tracking-tighter text-blue-900">HQ IT Solutions</div>',
+    `<a href="${home}" class="text-xl font-bold tracking-tighter text-blue-900 hover:opacity-90 transition-opacity">HQ IT Solutions</a>`,
   );
   return html;
 }

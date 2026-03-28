@@ -20,7 +20,7 @@ export function readStitchHtml(slug: string): { title: string; bodyHtml: string 
   const filePath = path.join(contentDir, `${slug}.html`);
   const html = fs.readFileSync(filePath, "utf8");
   const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
-  const title = titleMatch?.[1]?.trim() ?? "ArchitectCore IT Solutions";
+  const title = titleMatch?.[1]?.trim() ?? "HQ IT Solutions";
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
   const rawBody = bodyMatch?.[1]?.trim() ?? "";
   const bodyHtml = applyInternalPageLinks(rawBody, slug);

@@ -1,7 +1,7 @@
 # Requires: Settings → Pages → Build and deployment → Source: GitHub Actions
 # (Not "Deploy from a branch".)
 
-name: Deploy ArchitectCore to GitHub Pages
+name: Deploy HQ IT Solutions to GitHub Pages
 
 on:
   push:
