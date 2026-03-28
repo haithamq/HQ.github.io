@@ -3,16 +3,26 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
+    "**/.next/**",
+    "**/out/**",
+    "**/node_modules/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "hq-solutions/**",
+    "SCELTA/**",
+    "bassera/**",
+    "web-hotel-cms/**",
+    "web-ingress/**",
+    "majistic/**",
+    "HQ/**",
+    "stitch/**",
+    "_next_app/**",
+    "stitch 2/**",
   ]),
+  ...nextVitals,
+  ...nextTs,
 ]);
 
 export default eslintConfig;

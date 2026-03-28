@@ -1,15 +1,10 @@
-# Deploys the Next.js static export from "stitch 2/web" to GitHub Pages.
-# If your repository root is only the Next app, change APP_DIR below to "." and
-# update paths in this file accordingly.
+# Next.js app lives at the repository root (typical for a dedicated HQ.github.io site repo).
 
 name: Deploy ArchitectCore to GitHub Pages
 
 on:
   push:
     branches: ["main"]
-    paths:
-      - "stitch 2/web/**"
-      - ".github/workflows/deploy-architectcore-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -22,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  APP_DIR: "stitch 2/web"
+  APP_DIR: "."
 
 jobs:
   build:
@@ -36,7 +31,7 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Compute BASE_PATH for GitHub Pages
         id: pages
@@ -44,19 +39,17 @@ jobs:
           REPO="${{ github.event.repository.name }}"
           OWNER="${{ github.repository_owner }}"
           if [ "$REPO" = "${OWNER}.github.io" ]; then
-            echo "User or organization site: no base path."
+            echo "Site at https://${OWNER}.github.io/ — no asset base path."
             echo "base_path=" >> "$GITHUB_OUTPUT"
           else
-            echo "Project site: base path /${REPO}"
+            echo "Project site — base path /${REPO}"
             echo "base_path=/${REPO}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Install dependencies
-        working-directory: ${{ env.APP_DIR }}
         run: npm ci
 
       - name: Lint and static export
-        working-directory: ${{ env.APP_DIR }}
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: npm run check
@@ -64,7 +57,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.APP_DIR }}/out
+          path: out
 
   deploy:
     needs: build
