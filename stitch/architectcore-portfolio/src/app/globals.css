@@ -1,6 +1,0 @@
-@import "../styles/tokens.css";
-
-body {
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
-}

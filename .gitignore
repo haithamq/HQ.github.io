@@ -17,10 +17,6 @@ node_modules/
 /.next/
 /out/
 
-# Legacy nested app (do not commit deps or .next cache)
-_next_app/node_modules/
-_next_app/.next/
-
 # production
 /build
 
